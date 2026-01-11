@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор топлива</title>
+    <script src="telegram.org"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
+        input { width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h3>Расчет расхода</h3>
+    <input type="number" id="way1" placeholder="Начальный пробег">
+    <input type="number" id="way2" placeholder="Конечный пробег">
+    <input type="number" id="fuel" placeholder="Топлива в баке">
+    <input type="number" id="norm" placeholder="Норма расхода">
+    <button onclick="calculate()">Рассчитать</button>
+
+    <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Развернуть на весь экран
+
+        function calculate() {
+            const w1 = parseFloat(document.getElementById('way1').value);
+            const w2 = parseFloat(document.getElementById('way2').value);
+            const f = parseFloat(document.getElementById('fuel').value);
+            const n = parseFloat(document.getElementById('norm').value);
+
+            if (isNaN(w1) || isNaN(w2) || isNaN(f) || isNaN(n)) {
+                alert("Заполните все поля числами");
+                return;
+            }
+
+            const fuelm = (w2 - w1) * n / 100;
+            const ostatok = f - fuelm;
+
+            document.getElementById('result').innerText = 
+                `Расход: ${fuelm.toFixed(2)} л.\nОстаток: ${ostatok.toFixed(2)} л.`;
+            
+            // Можно отправить данные обратно боту
+            // tg.sendData(JSON.stringify({fuelm, ostatok}));
+        }
+    </script>
+</body>
+</html>
