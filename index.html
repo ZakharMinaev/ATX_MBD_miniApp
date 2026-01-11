@@ -3,191 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Калькулятор топлива 2026</title>
+    <title>Калькулятор топлива</title>
     <script src="telegram.org"></script>
     <style>
         :root {
-            --bg: var(--tg-theme-secondary-bg-color, #f0f0f5);
-            --card-bg: var(--tg-theme-bg-color, #ffffff);
+            --bg: var(--tg-theme-bg-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #f4f4f7);
             --text: var(--tg-theme-text-color, #000000);
             --hint: var(--tg-theme-hint-color, #999999);
             --button: var(--tg-theme-button-color, #248bed);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --input-bg: var(--tg-theme-bg-color, #ffffff);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--secondary-bg);
             color: var(--text);
             margin: 0;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            padding: 20px;
+            padding-bottom: 50px;
         }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        h3 { margin-top: 0; font-size: 18px; color: var(--button); }
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 13px; color: var(--hint); margin-bottom: 4px; margin-left: 4px; }
-        
+        .input-block {
+            background: var(--bg);
+            border-radius: 15px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: var(--hint);
+            margin-bottom: 6px;
+        }
+
         input {
             width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid var(--bg);
-            background: var(--input-bg);
+            border: none;
+            background: transparent;
             color: var(--text);
-            font-size: 16px;
-            box-sizing: border-box;
+            font-size: 18px; /* Увеличенный шрифт */
+            font-weight: 500;
             outline: none;
-            transition: border 0.2s;
+            padding: 4px 0;
+            box-sizing: border-box;
         }
-        input:focus { border-color: var(--button); }
-
-        .result-card {
-            background: var(--button);
-            color: var(--button-text);
-            display: none;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .result-val { font-weight: bold; font-size: 18px; }
 
         button {
             width: 100%;
-            padding: 16px;
+            padding: 20px; /* Крупная кнопка */
             background: var(--button);
             color: var(--button-text);
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
+            border-radius: 15px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 8px;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        button:active {
+            opacity: 0.8;
+        }
+
+        .result-box {
+            background: var(--bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 2px solid var(--button);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .result-val {
+            font-weight: 800;
+            color: var(--button);
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h3>🚗 Одометр и Бак</h3>
-        <div class="input-group">
-            <label>Пробег на начало</label>
-            <input type="number" id="way1" value="0">
-        </div>
-        <div class="input-group">
-            <label>Пробег на конец</label>
-            <input type="number" id="way2" value="0">
-        </div>
-        <div class="input-group">
-            <label>Топливо в баке (начало)</label>
-            <input type="number" id="fuel" value="0">
-        </div>
-        <div class="input-group">
-            <label>Заправка в течение смены</label>
-            <input type="number" id="addFuel" value="0">
-        </div>
+<div class="container">
+    <h2>Расчет остатка за смену</h2>
+
+    <div class="input-block">
+        <label>Введите пробег на начало смены</label>
+        <input type="number" id="way1" value="0" step="any">
     </div>
 
-    <div class="card">
-        <h3>📊 Нормативы и Дистанция</h3>
-        <div class="input-group">
-            <label>Городской норматив (основной)</label>
-            <input type="number" id="norm" value="0">
-        </div>
-        <div class="input-group">
-            <label>Пробег по трассе</label>
-            <input type="number" id="highway" value="0">
-        </div>
-        <div class="input-group">
-            <label>Норматив (трасса)</label>
-            <input type="number" id="highwayNormative" value="0">
-        </div>
-        <div class="input-group">
-            <label>Пробег по миллионнику</label>
-            <input type="number" id="millionCity" value="0">
-        </div>
-        <div class="input-group">
-            <label>Норматив (миллионник)</label>
-            <input type="number" id="millionCityNormative" value="0">
-        </div>
+    <div class="input-block">
+        <label>Введите пробег на конец смены</label>
+        <input type="number" id="way2" value="0" step="any">
     </div>
 
-    <button onclick="calculate()">Рассчитать итоги</button>
+    <div class="input-block">
+        <label>Введите количество топлива в баке на начало смены</label>
+        <input type="number" id="fuel" value="0" step="any">
+    </div>
 
-    <div id="resultCard" class="card result-card">
-        <div class="result-row">
-            <span>Общий расход:</span>
-            <span id="resFuelM" class="result-val">0.00</span>
+    <div class="input-block">
+        <label>Введите пробег по трассе</label>
+        <input type="number" id="highway" value="0" step="any">
+    </div>
+
+    <div class="input-block">
+        <label>Введите норматив расхода по трассе</label>
+        <input type="number" id="highwayNormative" value="0" step="any">
+    </div>
+
+    <div class="input-block">
+        <label>Введите пробег по миллионнику</label>
+        <input type="number" id="millionCity" value="0" step="any">
+    </div>
+
+    <div class="input-block">
+        <label>Введите норматив расхода по миллионнику</label>
+        <input type="number" id="millionCityNormative" value="0" step="any">
+    </div>
+
+    <div class="input-block">
+        <label>Введите количество заправленного топлива</label>
+        <input type="number" id="addFuel" value="0" step="any">
+    </div>
+
+    <div class="input-block">
+        <label>Введите норматив расхода по городу</label>
+        <input type="number" id="norm" value="0" step="any">
+    </div>
+
+    <button onclick="calculate()">Рассчитать</button>
+
+    <div id="resultBox" class="result-box">
+        <div class="result-item">
+            <span>Расход за смену:</span>
+            <span id="resFuelM" class="result-val">0.00 л.</span>
         </div>
-        <div class="result-row" style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;">
+        <div class="result-item">
             <span>Остаток в баке:</span>
-            <span id="resOstatok" class="result-val">0.00</span>
+            <span id="resOstatok" class="result-val">0.00 л.</span>
         </div>
     </div>
+</div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-        function calculate() {
-            // Получаем значения или 0, если пусто
-            const getValue = (id) => parseFloat(document.getElementById(id).value) || 0;
+    function calculate() {
+        const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
 
-            const w1 = getValue('way1');
-            const w2 = getValue('way2');
-            const f_start = getValue('fuel');
-            const addFuel = getValue('addFuel');
-            
-            const n_city = getValue('norm');
-            const dist_hway = getValue('highway');
-            const n_hway = getValue('highwayNormative');
-            const dist_mill = getValue('millionCity');
-            const n_mill = getValue('millionCityNormative');
+        // Сбор данных
+        const w1 = getVal('way1');
+        const w2 = getVal('way2');
+        const f_start = getVal('fuel');
+        const dist_hway = getVal('highway');
+        const n_hway = getVal('highwayNormative');
+        const dist_mill = getVal('millionCity');
+        const n_mill = getVal('millionCityNormative');
+        const addFuel = getVal('addFuel');
+        const n_city = getVal('norm');
 
-            const totalDist = w2 - w1;
-            
-            if (totalDist < 0) {
-                tg.showAlert("Конечный пробег не может быть меньше начального!");
-                return;
-            }
+        // Логика расчета
+        const totalDist = w2 - w1;
+        
+        // Вычисляем остаток дистанции (город)
+        const dist_city = totalDist - dist_hway - dist_mill;
 
-            // Расчет пробега по обычному городу (остаток от общего пути)
-            const dist_city = totalDist - dist_hway - dist_mill;
+        // Расход по категориям
+        const spent_hway = (dist_hway * n_hway) / 100;
+        const spent_mill = (dist_mill * n_mill) / 100;
+        const spent_city = (Math.max(0, dist_city) * n_city) / 100;
 
-            // Расчет расхода по частям
-            const fuel_hway = (dist_hway * n_hway) / 100;
-            const fuel_mill = (dist_mill * n_mill) / 100;
-            const fuel_city = (Math.max(0, dist_city) * n_city) / 100;
+        const totalSpent = spent_hway + spent_mill + spent_city;
+        const finalFuel = f_start + addFuel - totalSpent;
 
-            const totalSpent = fuel_hway + fuel_mill + fuel_city;
-            const finalFuel = f_start + addFuel - totalSpent;
-
-            // Вывод результата
-            document.getElementById('resFuelM').innerText = totalSpent.toFixed(2) + " л.";
-            document.getElementById('resOstatok').innerText = finalFuel.toFixed(2) + " л.";
-            
-            document.getElementById('resultCard').style.display = 'block';
-            
-            // Виброотклик в 2026 это стандарт
-            tg.HapticFeedback.impactOccurred('medium');
+        // Вывод
+        document.getElementById('resFuelM').innerText = totalSpent.toFixed(2) + " л.";
+        document.getElementById('resOstatok').innerText = finalFuel.toFixed(2) + " л.";
+        
+        document.getElementById('resultBox').style.display = 'block';
+        
+        // Вибрация при расчете
+        if (tg.HapticFeedback) {
+            tg.HapticFeedback.notificationOccurred('success');
         }
-    </script>
+
+        // Прокрутка к результату
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+</script>
+
 </body>
 </html>
