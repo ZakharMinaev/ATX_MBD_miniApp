@@ -8,15 +8,20 @@
     <style>
         body { font-family: sans-serif; padding: 20px; background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
         input { width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; border-radius: 8px; cursor: pointer; }
+        button { width: 100%; padding: 12px; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: var(--tg-theme-button-border); border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h3>Расчет расхода</h3>
+    <h3>Расчет остатка топлива за смену</h3>
     <input type="number" id="way1" placeholder="Введите пробег на начало смены">
     <input type="number" id="way2" placeholder="Введите пробег на конец смены">
     <input type="number" id="fuel" placeholder="Введите количество топлива в баке на начало смены">
-    <input type="number" id="norm" placeholder="Норма расхода">
+    <input type="number" id="highway" placeholder="Введите пробег по трассе">
+    <input type="number" id="highwayNormative" placeholder="Введите норматив расхода по трассе">
+    <input type="number" id="millionCity" placeholder="Введите пробег по миллионнику">
+    <input type="number" id="millionCityNormative" placeholder="Введите норматив расхода по миллионнику">
+    <input type="number" id="addFuel" placeholder="Введите количество заправленного топлива">
+    <input type="number" id="norm" placeholder="Введите норматив расхода по городу">
     <button onclick="calculate()">Рассчитать</button>
 
     <div id="result" style="margin-top: 20px; font-weight: bold;"></div>
@@ -29,15 +34,21 @@
             const w1 = parseFloat(document.getElementById('way1').value);
             const w2 = parseFloat(document.getElementById('way2').value);
             const f = parseFloat(document.getElementById('fuel').value);
+            const h = parseFloat(document.getElementById('highway').value);
+            const hn = parseFloat(document.getElementById('highwayNormative').value);
+            const m = parseFloat(document.getElementById('millionCity').value);
+            const mn = parseFloat(document.getElementById('millionCityNormative').value);
+            const af = parseFloat(document.getElementById('addFuel').value);
             const n = parseFloat(document.getElementById('norm').value);
 
             if (isNaN(w1) || isNaN(w2) || isNaN(f) || isNaN(n)) {
-                alert("Заполните все поля числами");
+                alert("Заполните данные одометра на начало и конец смены, количество топлива в баке, городской норматив  числами");
                 return;
             }
+            const hway = 
 
             const fuelm = (w2 - w1) * n / 100;
-            const ostatok = f - fuelm;
+            const ostatok = f - fuelm + af;
 
             document.getElementById('result').innerText = 
                 `Расход: ${fuelm.toFixed(2)} л.\nОстаток: ${ostatok.toFixed(2)} л.`;
@@ -49,3 +60,4 @@
 </body>
 
 </html>
+
