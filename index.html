@@ -8,160 +8,169 @@
     <style>
         :root {
             --bg: var(--tg-theme-bg-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #f4f4f7);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f2f5);
             --text: var(--tg-theme-text-color, #000000);
-            --hint: var(--tg-theme-hint-color, #999999);
+            --hint: var(--tg-theme-hint-color, #707579);
             --button: var(--tg-theme-button-color, #248bed);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
+            --input-border: #e0e0e0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--secondary-bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
-            padding-bottom: 50px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
+        .app-container {
+            width: 100%;
+            max-width: 450px;
         }
 
-        h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .input-block {
+        .card {
             background: var(--bg);
-            border-radius: 15px;
-            padding: 12px 16px;
+            border-radius: 16px;
+            padding: 16px;
             margin-bottom: 12px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
         }
+
+        h3 { margin: 0 0 12px 0; font-size: 16px; color: var(--button); font-weight: 600; }
+
+        .input-wrapper { margin-bottom: 14px; }
+        .input-wrapper:last-child { margin-bottom: 0; }
 
         label {
             display: block;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--hint);
             margin-bottom: 6px;
+            margin-left: 2px;
         }
 
         input {
             width: 100%;
-            border: none;
-            background: transparent;
+            padding: 10px 12px;
+            border: 1px solid var(--input-border);
+            border-radius: 10px;
+            background: var(--bg);
             color: var(--text);
-            font-size: 18px; /* Увеличенный шрифт */
-            font-weight: 500;
-            outline: none;
-            padding: 4px 0;
+            font-size: 15px;
             box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--button); }
+
+        /* Сетка для полей 50/50 */
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .row .input-wrapper {
+            flex: 1;
+            margin-bottom: 0;
         }
 
         button {
             width: 100%;
-            padding: 20px; /* Крупная кнопка */
+            padding: 14px;
             background: var(--button);
             color: var(--button-text);
             border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: bold;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
+            margin-top: 4px;
         }
 
-        button:active {
-            opacity: 0.8;
-        }
-
-        .result-box {
-            background: var(--bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
+        .result {
             display: none;
-            border: 2px solid var(--button);
+            background: var(--button);
+            color: var(--button-text);
+            margin-top: 16px;
         }
-
-        .result-item {
+        .res-line {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
-            margin-bottom: 8px;
+            padding: 4px 0;
+            font-size: 15px;
         }
-
-        .result-val {
-            font-weight: 800;
-            color: var(--button);
-        }
+        .res-val { font-weight: bold; font-size: 17px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Расчет остатка за смену</h2>
-
-    <div class="input-block">
-        <label>Введите пробег на начало смены</label>
-        <input type="number" id="way1" value="0" step="any">
+<div class="app-container">
+    <div class="card">
+        <h3>Одометр и Бак</h3>
+        <div class="input-wrapper">
+            <label>Пробег на начало смены</label>
+            <input type="number" id="way1" value="0">
+        </div>
+        <div class="input-wrapper">
+            <label>Пробег на конец смены</label>
+            <input type="number" id="way2" value="0">
+        </div>
+        <div class="input-wrapper">
+            <label>Топливо в баке на начало</label>
+            <input type="number" id="fuel" value="0">
+        </div>
     </div>
 
-    <div class="input-block">
-        <label>Введите пробег на конец смены</label>
-        <input type="number" id="way2" value="0" step="any">
+    <div class="card">
+        <h3>Трасса и Миллионник</h3>
+        <div class="row">
+            <div class="input-wrapper">
+                <label>Пробег трасса</label>
+                <input type="number" id="highway" value="0">
+            </div>
+            <div class="input-wrapper">
+                <label>Норма трасса</label>
+                <input type="number" id="highwayNormative" value="0">
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-wrapper">
+                <label>Пробег милл-ник</label>
+                <input type="number" id="millionCity" value="0">
+            </div>
+            <div class="input-wrapper">
+                <label>Норма милл-ник</label>
+                <input type="number" id="millionCityNormative" value="0">
+            </div>
+        </div>
     </div>
 
-    <div class="input-block">
-        <label>Введите количество топлива в баке на начало смены</label>
-        <input type="number" id="fuel" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите пробег по трассе</label>
-        <input type="number" id="highway" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите норматив расхода по трассе</label>
-        <input type="number" id="highwayNormative" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите пробег по миллионнику</label>
-        <input type="number" id="millionCity" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите норматив расхода по миллионнику</label>
-        <input type="number" id="millionCityNormative" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите количество заправленного топлива</label>
-        <input type="number" id="addFuel" value="0" step="any">
-    </div>
-
-    <div class="input-block">
-        <label>Введите норматив расхода по городу</label>
-        <input type="number" id="norm" value="0" step="any">
+    <div class="card">
+        <h3>Заправка и Город</h3>
+        <div class="input-wrapper">
+            <label>Количество заправленного топлива</label>
+            <input type="number" id="addFuel" value="0">
+        </div>
+        <div class="input-wrapper">
+            <label>Норматив расхода по городу</label>
+            <input type="number" id="norm" value="0">
+        </div>
     </div>
 
     <button onclick="calculate()">Рассчитать</button>
 
-    <div id="resultBox" class="result-box">
-        <div class="result-item">
-            <span>Расход за смену:</span>
-            <span id="resFuelM" class="result-val">0.00 л.</span>
+    <div id="resCard" class="card result">
+        <div class="res-line">
+            <span>Расход:</span>
+            <span id="resSpent" class="res-val">0.00 л.</span>
         </div>
-        <div class="result-item">
+        <div class="res-line" style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 6px; padding-top: 6px;">
             <span>Остаток в баке:</span>
-            <span id="resOstatok" class="result-val">0.00 л.</span>
+            <span id="resFinal" class="res-val">0.00 л.</span>
         </div>
     </div>
 </div>
@@ -172,45 +181,26 @@
     tg.expand();
 
     function calculate() {
-        const getVal = (id) => parseFloat(document.getElementById(id).value) || 0;
+        const get = (id) => parseFloat(document.getElementById(id).value) || 0;
 
-        // Сбор данных
-        const w1 = getVal('way1');
-        const w2 = getVal('way2');
-        const f_start = getVal('fuel');
-        const dist_hway = getVal('highway');
-        const n_hway = getVal('highwayNormative');
-        const dist_mill = getVal('millionCity');
-        const n_mill = getVal('millionCityNormative');
-        const addFuel = getVal('addFuel');
-        const n_city = getVal('norm');
-
-        // Логика расчета
-        const totalDist = w2 - w1;
+        const totalDist = get('way2') - get('way1');
+        const dist_hway = get('highway');
+        const dist_mill = get('millionCity');
         
-        // Вычисляем остаток дистанции (город)
-        const dist_city = totalDist - dist_hway - dist_mill;
+        // Городской путь — это остаток
+        const dist_city = Math.max(0, totalDist - dist_hway - dist_mill);
 
-        // Расход по категориям
-        const spent_hway = (dist_hway * n_hway) / 100;
-        const spent_mill = (dist_mill * n_mill) / 100;
-        const spent_city = (Math.max(0, dist_city) * n_city) / 100;
+        const spent = (dist_hway * get('highwayNormative') / 100) +
+                      (dist_mill * get('millionCityNormative') / 100) +
+                      (dist_city * get('norm') / 100);
 
-        const totalSpent = spent_hway + spent_mill + spent_city;
-        const finalFuel = f_start + addFuel - totalSpent;
+        const final = get('fuel') + get('addFuel') - spent;
 
-        // Вывод
-        document.getElementById('resFuelM').innerText = totalSpent.toFixed(2) + " л.";
-        document.getElementById('resOstatok').innerText = finalFuel.toFixed(2) + " л.";
-        
-        document.getElementById('resultBox').style.display = 'block';
-        
-        // Вибрация при расчете
-        if (tg.HapticFeedback) {
-            tg.HapticFeedback.notificationOccurred('success');
-        }
+        document.getElementById('resSpent').innerText = spent.toFixed(2) + " л.";
+        document.getElementById('resFinal').innerText = final.toFixed(2) + " л.";
+        document.getElementById('resCard').style.display = 'block';
 
-        // Прокрутка к результату
+        if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 </script>
