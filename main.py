@@ -1,10 +1,7 @@
 import telebot
 from telebot import types
 
-import os
-
-token = os.getenv("TG_BOT")
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot("8565768319:AAFR9zCD1I0Vii0EydKuoscgTJX7x7OwWdg")
 APP_URL = "https://zakharminaev.github.io/ATX_MBD_miniApp/"
 
 @bot.message_handler(commands=["start"])
@@ -22,4 +19,5 @@ def start(message):
     )
 
 bot.polling(none_stop=True)
+
 
